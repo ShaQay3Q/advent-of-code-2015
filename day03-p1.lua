@@ -6,6 +6,9 @@ local function read_file(path)
     return content
 end
 
+print(string.len(read_file("Day03p01.txt")))
+print(string.len(read_file("Day03p02.txt")))
+
 function numberOfHousesSantaAlone(instruction)
   --local totalNumber = 0
   local x = 0
@@ -42,24 +45,31 @@ function isTheElementInTheList (list, house)
 end
 
 
-function isItSantasTurn(index)
-  if index % 2 == 0 then
-    return true
-  end
-  return false
-end
-
 function numberOfHousesSantaRobosanta(instruction)
   local x = 0
   local y = 0
   local b = 0
   local a = 0
-  local houseAddress = {}
-  table.insert(houseAddress, {x, y})
+  local m
+  local n
+  local houseAddressList = {}
+  table.insert(houseAddressList, {0, 0})
   for i = 1, string.len(instruction), 1 do
   local indexCharchter = string.sub(instruction, i, i)
   
-    if isItSantasTurn(i) then
+    if isItRobosantasTurn(i) then
+           if indexCharchter == ">" then
+        a = a + 1
+      elseif indexCharchter == "<" then
+        a = a -1
+      elseif indexCharchter == "^"then
+        b = b + 1
+      else 
+        b = b - 1
+      end
+      m = a
+      n = b
+    else
       if indexCharchter == ">" then
         x = x + 1
       elseif indexCharchter == "<" then
@@ -69,26 +79,21 @@ function numberOfHousesSantaRobosanta(instruction)
       else 
         y = y - 1
       end
-      local m = x
-      local n = y
-    else
-      if indexCharchter == ">" then
-        a = a + 1
-      elseif indexCharchter == "<" then
-        a = a -1
-      elseif indexCharchter == "^"then
-        b = b + 1
-      else 
-        b = b - 1
-      end
-      local m = a
-      local n = b
+      m = x
+      n = y 
     end
+    if not isTheElementInTheList(houseAddressList, {m, n}) then
+    table.insert(houseAddressList, {m, n})
   end
-  if not isTheElementInTheList(houseAddress, {m, n}) then
-      table.insert(houseAddress, {m, n})
   end
-  return #houseAddress  
+  return #houseAddressList  
+end
+
+function isItRobosantasTurn(index)
+  if index % 2 == 0 then
+    return true
+  end
+  return false
 end
 
 
@@ -106,8 +111,8 @@ assert (numberOfHousesSantaAlone("^v") == 2)
 assert (numberOfHousesSantaAlone("^>v<") == 4)
 assert (numberOfHousesSantaAlone("^v^v^v^v^v") == 2)
 
-assert (not isItSantasTurn(3))
-assert (isItSantasTurn(12) == true)
+assert (not isItRobosantasTurn(3))
+assert (isItRobosantasTurn(12) == true)
 
 assert (numberOfHousesSantaRobosanta(">") == 2)
 assert (numberOfHousesSantaRobosanta(">>") == 2)
